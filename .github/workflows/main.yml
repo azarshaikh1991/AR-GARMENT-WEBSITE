@@ -1,0 +1,77 @@
+# 1. Pipeline ka naam
+name: Parameterized CI CD Pipeline
+
+# 2. Ye pipeline kab chalegi? (Trigger)
+on:
+  # workflow_dispatch ka matlab hai "Manual Trigger" yaani Parameters ke sath run karna
+  workflow_dispatch:
+    inputs:
+      BRANCH_NAME:
+        description: 'Kis branch se code pull karna hai?'
+        required: true
+        default: 'main'
+        type: string
+        
+      ENVIRONMENT:
+        description: 'Kis environment me deploy karna hai?'
+        required: true
+        default: 'dev'
+        type: choice
+        options:
+          - dev
+          - staging
+          - production
+          
+      RUN_TESTS:
+        description: 'Kya tests run karne hain?'
+        required: true
+        default: true
+        type: boolean
+
+# 3. Actual kaam yahan se shuru hota hai (Jaise Jenkins me Stages hote hain)
+jobs:
+  build-and-deploy:
+    # Ye pipeline kis OS par chalegi (Jaise Jenkins me agent any hota hai)
+    runs-on: ubuntu-latest
+
+    steps:
+      # Code pull karne ke liye Jenkins me git command hoti hai, yahan action use hota hai
+      - name: Checkout Code
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.inputs.BRANCH_NAME }}
+
+      - name: Print Parameters
+        run: |
+          echo "Starting pipeline for Branch: ${{ github.event.inputs.BRANCH_NAME }}"
+          echo "Target Environment: ${{ github.event.inputs.ENVIRONMENT }}"
+
+      # Jenkins ka 'sh' command yahan 'run:' ban jata hai
+      - name: Run Tests
+        # Conditional stage (Jenkins ka 'when' block)
+        if: ${{ github.event.inputs.RUN_TESTS == 'true' }}
+        run: |
+          echo "Running unit tests..."
+          echo "Executing mvn test..."
+          sleep 2
+
+      - name: Deployment
+        run: |
+          echo "Deploying application to ${{ github.event.inputs.ENVIRONMENT }} server..."
+          echo "Deploying artifact to ${{ github.event.inputs.ENVIRONMENT }} environment now!"
+
+      # 4. Post Actions (Jenkins ka post block)
+      # Ye step hamesha chalega (Jenkins: always)
+      - name: Post Action - Always
+        if: always()
+        run: echo "Pipeline ka kaam khatam hua! Cleaning up..."
+
+      # Ye step tabhi chalega jab sab kuch pass ho jaye (Jenkins: success)
+      - name: Post Action - Success
+        if: success()
+        run: echo "Mubarak ho! Build successfully deploy ho gayi."
+
+      # Ye step tabhi chalega agar koi step fail ho jaye (Jenkins: failure)
+      - name: Post Action - Failure
+        if: failure()
+        run: echo "Oh no! Pipeline fail ho gayi. Kripya logs check karein."
