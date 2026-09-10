@@ -1,105 +1,124 @@
-// ====== CONSTANT RAW DATA BRAND DICTIONARY ======
-// Saare file names aapke assets folder ke hisaab se update kar diye hain
 const catalogData = [
     {
-        name: "Orange T-Shirt",
+        name: "T-Shirts",
         tagline: "Wear your Style with Comfort",
-        price: "$29.99",
-        image: "orange-tshirt.png",
-        color: "#FF7043", // Vivid Orange theme
-        whatsappMsg: "Hello! I am interested in buying the Orange T-Shirt. Please share available sizes."
+        price: "Start from 300₹",
+        color: "radial-gradient(circle at 75% 50%, rgba(255, 112, 67, 0.22) 0%, rgba(20, 12, 8, 1) 75%)", 
+        dotColor: "#FF7043", // Active color for Orange T-Shirt
+        whatsappMsg: "Hello! I am interested in buying the Orange T-Shirt."
     },
     {
-        name: "Olive Shirt",
+        name: "Shirts",
         tagline: "Stay Sharp, Stay Minimal",
-        price: "$39.99",
-        image: "olive-shirt.png",
-        color: "#4E4E3B", // Aesthetic Olive Green theme
-        whatsappMsg: "Hello! I would like to inquire about the Olive Shirt. Is it in stock?"
+        price: "Start from 600₹",
+        color: "radial-gradient(circle at 75% 50%, rgba(78, 78, 59, 0.35) 0%, rgba(12, 12, 10, 1) 75%)", 
+        dotColor: "#818163", // Active color for Olive Shirt
+        whatsappMsg: "Hello! I would like to inquire about the Olive Shirt."
     },
     {
-        name: "Lavender Jeans",
+        name: " Jeans",
         tagline: "Premium Aesthetic Denim Look",
-        price: "$49.99",
-        image: "lavender-jeans.png",
-        color: "#7E57C2", // Jeans dark pastel purple theme
-        whatsappMsg: "Hello! I am interested in the Lavender Jeans. Please share size details."
+        price: "Start from 700₹",
+        color: "radial-gradient(circle at 75% 50%, rgba(126, 87, 194, 0.22) 0%, rgba(12, 10, 18, 1) 75%)", 
+        dotColor: "#7E57C2", // Active color for Lavender Jeans
+        whatsappMsg: "Hello! I am interested in the Lavender Jeans."
     }
 ];
 
-// Target Business Whatsapp Config (No '+' sign)
 const businessPhone = "919876543210"; 
+let currentIndex = 0;
+let autoSliderTimer = null;
 
-// ====== DOM ELEMENTS ======
 const container = document.getElementById('hero-container');
 const pName = document.getElementById('product-name');
 const pTagline = document.getElementById('product-tagline');
 const pPrice = document.getElementById('product-price');
-const pImage = document.getElementById('main-product');
 const whatsappBtn = document.getElementById('whatsapp-btn');
-const controlsContainer = document.getElementById('color-controls');
 
-const menuToggle = document.getElementById('mobile-menu');
-const navLinksList = document.getElementById('nav-list');
+const cOrange = document.getElementById('c-orange');
+const cOlive = document.getElementById('c-olive');
+const cLavender = document.getElementById('c-lavender');
 
-// ====== INITIALIZE COLOR SELECTION DOTS DYNAMICALLY ======
-catalogData.forEach((item, index) => {
-    const dot = document.createElement('div');
-    dot.classList.add('dot');
-    dot.style.backgroundColor = item.color;
-    if(index === 0) dot.classList.add('active'); 
+const stageContainers = [cOrange, cOlive, cLavender];
+
+function rotate3DStageEngine(activeIndex) {
+    currentIndex = activeIndex;
+    const currentProduct = catalogData[activeIndex];
     
-    dot.addEventListener('click', () => {
-        document.querySelectorAll('.dot').forEach(d => d.classList.remove('active'));
-        dot.classList.add('active');
-        changeProductEngine(index);
+    // Text and content updating
+    pName.innerText = currentProduct.name;
+    pTagline.innerText = currentProduct.tagline;
+    pPrice.innerText = currentProduct.price;
+    
+    // Background scaling adapter
+    if (window.innerWidth > 1024) {
+        container.style.background = currentProduct.color;
+    } else {
+        let mobileColor = currentProduct.color.replace("at 75% 50%", "at 50% 65%");
+        container.style.background = mobileColor;
+    }
+    
+    const encodedText = encodeURIComponent(currentProduct.whatsappMsg);
+    whatsappBtn.href = `https://wa.me/${businessPhone}?text=${encodedText}`;
+    document.querySelector('.submit-btn').style.background = currentProduct.color;
+
+    // 🌟 DOTS COLOR MATCHING ENGINE
+    const dots = document.querySelectorAll('.dot');
+    dots.forEach((d, i) => {
+        if (i === activeIndex) {
+            d.classList.add('active');
+            // Active dot par current item ka branded color apply hoga aur glow aayega
+            d.style.background = currentProduct.dotColor;
+            d.style.borderColor = currentProduct.dotColor;
+            d.style.boxShadow = `0 0 14px ${currentProduct.dotColor}`;
+        } else {
+            d.classList.remove('active');
+            // Inactive dots default transparent background par chale jayenge
+            d.style.background = "rgba(255, 255, 255, 0.25)";
+            d.style.borderColor = "transparent";
+            d.style.boxShadow = "none";
+        }
     });
-    
-    controlsContainer.appendChild(dot);
-});
 
-// ====== SMOOTH INTERPOLATION ANIMATION ENGINE ======
-function changeProductEngine(index) {
-    const targetProduct = catalogData[index];
-    
-    // Start CSS shrink transition
-    pImage.classList.add('image-change');
-    
-    // Swap data mid-way smoothly
-    setTimeout(() => {
-        pName.innerText = targetProduct.name;
-        pTagline.innerText = targetProduct.tagline;
-        pPrice.innerText = targetProduct.price;
-        pImage.src = targetProduct.image;
-        container.style.backgroundColor = targetProduct.color;
+    // Carousel position switcher
+    stageContainers.forEach((containerElement, elementIndex) => {
+        containerElement.classList.remove('pos-center', 'pos-top-right', 'pos-bottom-left');
         
-        // Build Encoded WhatsApp URL
-        const encodedText = encodeURIComponent(targetProduct.whatsappMsg);
-        whatsappBtn.href = `https://wa.me/${businessPhone}?text=${encodedText}`;
+        let dynamicState = (elementIndex - currentIndex + stageContainers.length) % stageContainers.length;
         
-        // Contact form button ka color theme ke sath badlega
-        document.querySelector('.submit-btn').style.background = targetProduct.color;
-        
-        // Dynamic focus color update for input borders
-        document.styleSheets[0].insertRule(`#contact-form input:focus, #contact-form textarea:focus { border-color: ${targetProduct.color}; }`, 0);
-
-        // Bring the new image back with a pop effect
-        pImage.classList.remove('image-change');
-    }, 300); 
+        if (dynamicState === 0) {
+            containerElement.classList.add('pos-center');
+        } else if (dynamicState === 1) {
+            containerElement.classList.add('pos-top-right');
+        } else if (dynamicState === 2) {
+            containerElement.classList.add('pos-bottom-left');
+        }
+    });
 }
 
-// ====== MOBILE NAVBAR TOGGLE LOGIC ======
-menuToggle.addEventListener('click', () => {
-    menuToggle.classList.toggle('is-active');
-    navLinksList.classList.toggle('show');
+// ⏱️ Auto slider loop set to 1.5 seconds as requested for ultra speed
+function startContinuousShowcase() {
+    stopContinuousShowcase();
+    autoSliderTimer = setInterval(() => {
+        let targetNextIndex = (currentIndex + 1) % catalogData.length;
+        rotate3DStageEngine(targetNextIndex);
+    }, 1500); 
+}
+
+function stopContinuousShowcase() {
+    if (autoSliderTimer) clearInterval(autoSliderTimer);
+}
+
+function manualSwitch(targetIndex) {
+    if (targetIndex === currentIndex) return;
+    rotate3DStageEngine(targetIndex);
+    startContinuousShowcase(); 
+}
+
+window.addEventListener('resize', () => {
+    rotate3DStageEngine(currentIndex);
 });
 
-document.querySelectorAll('.nav-links a').forEach(link => {
-    link.addEventListener('click', () => {
-        menuToggle.classList.remove('is-active');
-        navLinksList.classList.remove('show');
-    });
-});
-
-// Default execution loop on boot
-changeProductEngine(0);
+// Init
+rotate3DStageEngine(0);
+startContinuousShowcase();

@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AR Garment</title>
+    <link rel="icon" type="image/png" href="logo.png">
+    <link rel="stylesheet" href="ar.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+
+    <nav class="navbar">
+        <div class="logo">
+            <img src="logo.png" alt="Brand Logo">
+            <span class="logo-text"> AR CLOTHING</span>
+        </div>
+        
+        <ul class="nav-links">
+            <li><a href="#hero-container" class="active">Home</a></li>
+            <li><a href="#contact-section">Contact Us</a></li>
+        </ul>
+    </nav>
+
+    <section id="hero-container">
+        <div class="glow-overlay"></div>
+        
+        <div class="content">
+            <h1 id="product-name">Orange T-Shirt</h1>
+            <p id="product-tagline">Wear your Style with Comfort</p>
+            <h2 id="product-price">Start from 300₹</h2>
+            <a href="https://wa.me/919011166266?text=Hello!%20I%20am%20interested%20in%20the%20Lavender%20Jeans." id="whatsapp-btn" target="_blank" class="buy-btn">Inquire on WhatsApp</a>
+        </div>
+
+        <div class="image-box">
+            <div class="circle-bg"></div>
+            
+            <div class="garment-container pos-center" id="c-orange">
+                <img src="orange.png" alt="Orange T-Shirt" class="garment">
+            </div>
+            
+            <div class="garment-container pos-top-right" id="c-olive">
+                <img src="olive.png" alt="Olive Shirt" class="garment">
+            </div>
+            
+            <div class="garment-container pos-bottom-left" id="c-lavender">
+                <img src="lavender.png" alt="Lavender Jeans" class="garment">
+            </div>
+        </div>
+
+        <div class="controls">
+            <div class="dot active" onclick="manualSwitch(0)"></div>
+            <div class="dot" onclick="manualSwitch(1)"></div>
+            <div class="dot" onclick="manualSwitch(2)"></div>
+        </div>
+    </section>
+
+    <!-- CONTACT SECTION (Centered Single Column Layout) -->
+    <section id="contact-section">
+        <div class="container">
+            <h2>Get In Touch</h2>
+            <p class="sub-text">Have any questions or want to visit our store? Drop us a message or find us below.</p>
+
+            <!-- Store Info Box -->
+            <div class="store-info-box">
+                <h3>Visit Our Store</h3>
+                <p><strong>AR Clothing / Garment</strong></p>
+                <p>
+                    Lahoti Compound, Rd Number 1,<br>
+                    Hatte Nagar, Latur,<br>
+                    Maharashtra 413512
+                </p>
+                <!-- Yahan aapki nayi Google Map link update kar di gayi hai -->
+                <a href="https://maps.app.goo.gl/w5WSAABC4sc6KJfi9" target="_blank" class="map-link">
+                    View on Google Maps
+                </a>
+            </div>
+
+            <!-- Contact Form Box -->
+            <form id="contact-form" onsubmit="event.preventDefault(); alert('Thank you for your message! We will get back to you soon.');">
+                <input type="text" placeholder="Your Name" required>
+                <input type="email" placeholder="Your Email" required>
+                <textarea rows="5" placeholder="Your Message" required></textarea>
+                <button type="submit" class="submit-btn">Send Message</button>
+            </form>
+        </div>
+    </section>
+
+    <script src="ar.js"></script>
+</body>
+</html>
