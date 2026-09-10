@@ -25,7 +25,7 @@ const catalogData = [
     }
 ];
 
-const businessPhone = "919876543210"; 
+const businessPhone = "919011166266"; 
 let currentIndex = 0;
 let autoSliderTimer = null;
 
